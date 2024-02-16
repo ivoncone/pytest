@@ -1,0 +1,19 @@
+* Para rastrear las locaciones de cada usuario
+
+   location_id = fields.Many2one(
+        'stock.location',
+        string='Allowed Location',
+        compute='_compute_sh_location_id',
+        store=True)
+
+    @api.depends('create_uid.sh_location_ids')
+    def _compute_sh_location_id(self):
+        for record in self:
+            location_ids = record.create_uid.sh_location_ids.sorted()
+            if len(location_ids) > 1:
+                record.location_id = location_ids[1]
+            else:
+                record.location_id = False
+
+
+
